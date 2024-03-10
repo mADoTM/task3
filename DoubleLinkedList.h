@@ -1,88 +1,84 @@
-//
-// Created by Maxim Dolzhenko on 02.03.2024.
-//
-
-#ifndef TASK3_DOUBLELINKEDLIST_H
-#define TASK3_DOUBLELINKEDLIST_H
-
 #include <iostream>
-#include <vector>
-#include <string>
 
-template <class T>
-class DoublyLinkedList {
+template <typename T>
+class DoubleLinkedList {
 private:
     struct Node {
         T data;
         Node* prev;
         Node* next;
-
-        Node(const T& value) : data(value), prev(nullptr), next(nullptr) {}
+        Node(T newData, Node* newPrev = nullptr, Node* newNext = nullptr)
+                : data(newData), prev(newPrev), next(newNext) {}
     };
 
     Node* head;
     Node* tail;
-    int size;
 
 public:
-    DoublyLinkedList() : head(nullptr), tail(nullptr), size(0) {}
+    class Iterator {
+    private:
+        Node* current;
+    public:
+        Iterator(Node* node) : current(node) {}
 
-    void push_back(const T& value) {
-        Node* newNode = new Node(value);
-        if (size == 0) {
-            head = newNode;
-            tail = newNode;
+        T& operator*() {
+            return current->data;
+        }
+
+        Iterator& operator++() {
+            current = current->next;
+            return *this;
+        }
+
+        Iterator& operator--() {
+            current = current->prev;
+            return *this;
+        }
+
+        bool operator!=(const Iterator& other) {
+            return current != other.current;
+        }
+    };
+
+    DoubleLinkedList() : head(nullptr), tail(nullptr) {}
+
+    DoubleLinkedList(const DoubleLinkedList& other) : head(nullptr), tail(nullptr) {
+        for (Node* current = other.head; current != nullptr; current = current->next) {
+            push_back(current->data);
+        }
+    }
+
+    ~DoubleLinkedList() {
+        while (head != nullptr) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
+    void push_back(T data) {
+        Node* newNode = new Node(data, tail, nullptr);
+        if (!head) {
+            head = tail = newNode;
         } else {
             tail->next = newNode;
-            newNode->prev = tail;
             tail = newNode;
         }
-        size++;
     }
 
-    void pop_back() {
-        if (size == 0) {
-            std::cout << "List is empty, cannot pop back" << std::endl;
-        } else {
-            Node* lastNode = tail;
-            tail = tail->prev;
-            if (tail) {
-                tail->next = nullptr;
-            } else {
-                head = nullptr;
-            }
-            delete lastNode;
-            size--;
-        }
+    Iterator begin() {
+        return Iterator(head);
     }
 
-    void reversePrint() {
-        Node* current = tail;
-        while (current != nullptr) {
-            std::cout << current->data << " ";
-            current = current->prev;
-        }
-        std::cout << std::endl;
+    Iterator end() {
+        return Iterator(nullptr);
     }
 
-    void print() {
-        Node* current = head;
-        while (current) {
-            std::cout << current->data << " ";
-            current = current->next;
-        }
-        std::cout << std::endl;
+    Iterator rbegin() {
+        return Iterator(tail);
     }
 
-    ~DoublyLinkedList() {
-        Node* current = head;
-        Node* next = nullptr;
-        while (current) {
-            next = current->next;
-            delete current;
-            current = next;
-        }
+    Iterator rend() {
+        return Iterator(nullptr);
     }
 };
-
-#endif //TASK3_DOUBLELINKEDLIST_H

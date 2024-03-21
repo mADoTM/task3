@@ -26,13 +26,35 @@ public:
         }
 
         Iterator& operator++() {
-            current = current->next;
+            if(current != nullptr) {
+                current = current->next;
+            }
             return *this;
         }
 
+        Iterator operator++(int) {
+            auto previous = current;
+            if(current != nullptr) {
+                current = current->next;
+            }
+            return Iterator(previous);
+        }
+
+        //проверка в итераторе на первый и последний
+
         Iterator& operator--() {
-            current = current->prev;
+            if(current != nullptr) {
+                current = current->prev;
+            }
             return *this;
+        }
+
+        Iterator operator--(int) {
+            Node* previous = current;
+            if (current != nullptr) {
+                current = current->prev;
+            }
+            return Iterator(previous);
         }
 
         bool operator!=(const Iterator& other) {

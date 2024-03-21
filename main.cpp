@@ -10,7 +10,7 @@ int main() {
     intList.push_back(3);
 
     std::cout << "Int list: " << std::endl;
-    for (auto it = intList.begin(); it != intList.end(); ++it) {
+    for (auto it = intList.begin(); it != intList.end(); it++) {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
@@ -30,6 +30,24 @@ int main() {
     std::cout << "Int copy reversed list: " << std::endl;
 
     DoubleLinkedList<int> newList(intList);
+    for (auto it = newList.rbegin(); it != newList.rend(); it--) {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+
+    DoubleLinkedList<int> newListAgain(intList);
+    std::cout << "for with iterator\n";
+    auto iterator = newList.rbegin();
+    for(int i = 0; i < 100; i++) {
+        if(iterator != nullptr) {
+            std::cout << *iterator << " ";
+        } else {
+            std::cout << "null ";
+        }
+        iterator--;
+    }
+    std::cout << std::endl;
+    std::cout << "for with iterator prefix increment\n";
     for (auto it = newList.rbegin(); it != newList.rend(); --it) {
         std::cout << *it << " ";
     }
